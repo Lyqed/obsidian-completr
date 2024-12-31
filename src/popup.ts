@@ -87,9 +87,13 @@ export default class SuggestionPopup extends EditorSuggest<Suggestion> {
 
         const seen = new Set<string>();
         suggestions = suggestions.filter((suggestion) => {
-            if (seen.has(suggestion.displayName))
+            // Filter out suggestions that match the current query exactly (the first suggestion)
+            if (suggestion.displayName === this.context?.query) {
                 return false;
-
+            }
+            if (seen.has(suggestion.displayName)) {
+                return false;
+            }
             seen.add(suggestion.displayName);
             return true;
         });

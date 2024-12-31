@@ -437,8 +437,8 @@ class CursorActivityListener {
         // Prevents the suggestion popup from flickering when typing
         if (this.cursorTriggeredByChange) {
             this.cursorTriggeredByChange = false;
-            if (!didChangeLine)
-                return;
         }
+
+        this.suggestionPopup.close();
     };
 }
