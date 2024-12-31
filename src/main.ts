@@ -170,8 +170,13 @@ export default class CompletrPlugin extends Plugin {
             },
             // @ts-ignore
             isBypassCommand: () => {
-                // If popup is not focused or if no suggestion is selected (except first one which is current word),
-                // bypass the command to let Enter create a new line
+                // If enterToClearAndNewLine is enabled and either:
+                // - popup is not focused, or
+                // - no suggestion is selected (except first one which is current word)
+                // then bypass the command to let Enter create a new line
+                if (!this.settings.enterToClearAndNewLine) {
+                    return !this._suggestionPopup.isFocused();
+                }
                 const suggestions = (this._suggestionPopup as any).suggestions;
                 return !this._suggestionPopup.isFocused() || 
                        (suggestions && suggestions.selectedItem <= 0);

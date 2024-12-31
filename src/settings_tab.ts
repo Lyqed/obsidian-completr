@@ -60,6 +60,26 @@ export default class CompletrSettingsTab extends PluginSettingTab {
                 }));
 
         new Setting(containerEl)
+            .setName("Hide current word suggestion")
+            .setDesc("Whether to hide the first suggestion that shows your current word.")
+            .addToggle(toggle => toggle
+                .setValue(this.plugin.settings.hideCurrentWordSuggestion)
+                .onChange(async val => {
+                    this.plugin.settings.hideCurrentWordSuggestion = val;
+                    await this.plugin.saveSettings();
+                }));
+
+        new Setting(containerEl)
+            .setName("Enter creates new line")
+            .setDesc("When pressing Enter with no suggestion selected, create a new line and hide the suggestion box.")
+            .addToggle(toggle => toggle
+                .setValue(this.plugin.settings.enterToClearAndNewLine)
+                .onChange(async val => {
+                    this.plugin.settings.enterToClearAndNewLine = val;
+                    await this.plugin.saveSettings();
+                }));
+
+        new Setting(containerEl)
             .setName("Minimum word length")
             .setDesc("The minimum length a word has to be, to count as a valid suggestion. This value is used by the file" +
                 " scanner and word list provider.")
