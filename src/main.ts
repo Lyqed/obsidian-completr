@@ -169,7 +169,13 @@ export default class CompletrPlugin extends Plugin {
                 this._periodInserter.allowInsertPeriod();
             },
             // @ts-ignore
-            isBypassCommand: () => !this._suggestionPopup.isFocused(),
+            isBypassCommand: () => {
+                // If popup is not focused or if no suggestion is selected (except first one which is current word),
+                // bypass the command to let Enter create a new line
+                const suggestions = (this._suggestionPopup as any).suggestions;
+                return !this._suggestionPopup.isFocused() || 
+                       (suggestions && suggestions.selectedItem <= 0);
+            },
             isVisible: () => this._suggestionPopup.isVisible(),
         });
         this.addCommand({
@@ -417,8 +423,10 @@ class CursorActivityListener {
         
         // This prevents the popup from opening when switching to the previous line
         const didChangeLine = this.lastCursorLine != cursor.line;
-        if (didChangeLine)
+        if (didChangeLine) {
             this.suggestionPopup.preventNextTrigger();
+            this.suggestionPopup.close();
+        }
         this.lastCursorLine = cursor.line;
 
         // Clear all placeholders when moving cursor somewhere else
@@ -432,7 +440,5 @@ class CursorActivityListener {
             if (!didChangeLine)
                 return;
         }
-
-        this.suggestionPopup.close();
     };
 }
